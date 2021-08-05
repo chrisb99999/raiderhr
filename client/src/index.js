@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { UserProvider } from "./CurrentUserContext";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -10,7 +11,9 @@ ReactDOM.render(
       clientId="p1rbOAZQfRuJlBc5ycbRUfNUGGrkaKls"
       redirectUri={window.location.origin}
     >
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     </Auth0Provider>
   </React.StrictMode>,
   document.getElementById("root")

@@ -4,7 +4,15 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 
-const { getCompanies, addTestUser } = require("./handlers");
+const {
+  getCompanies,
+  addTestUser,
+  addCompany,
+  addTestCo,
+  getCompanyList,
+  addUser,
+  getUsersByCompany,
+} = require("./handlers");
 const PORT = 4000;
 express()
   .use(function (req, res, next) {
@@ -18,7 +26,7 @@ express()
     );
     next();
   })
-  .use(morgan("tiny"))
+  .use(morgan("dev"))
   .use(express.static("./server/assets"))
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
@@ -26,6 +34,11 @@ express()
 
   //endpoints
   .get("/api/companies", getCompanies)
+  .get("/api/companyList", getCompanyList)
+  .get("/api/users/:companyName", getUsersByCompany)
   .post("/api/test/user", addTestUser)
+  .post("/api/test/co", addTestCo)
+  .put("/api/addCompany/:companyName", addCompany)
+  .put("/api/addUser/:companyName", addUser)
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
