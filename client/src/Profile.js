@@ -3,54 +3,88 @@ import styled, { keyframes } from "styled-components";
 import Sidebar from "./Sidebar";
 import defaultUserPic from "./assets/user.png";
 import { UserContext } from "./CurrentUserContext";
-import { useAuth0 } from "@auth0/auth0-react";
-import { uuid } from "uuid";
+
 import ProfileInputForm from "./ProfileInputForm";
 import ProfileInfo from "./ProfileInfo";
 
 const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
-  const { currentUser, setUser, company, newUser } = useContext(UserContext);
-  const { user } = useAuth0();
-  const userEmail = user.email;
-  const [userInfo, setUserInfo] = useState({
-    givenName: "",
-    surname: "",
-    email: userEmail,
-    title: "",
-    // _id: uuid(),
-    role: "",
-    directReports: [],
-    reportsTo: "",
-    team: "",
-    salary: 0,
-    address: "",
-    country: "",
-    postalCode: "",
-    birthday: new Date("00/12/31"),
-    startDate: new Date("20/12/31"),
-    status: "active",
-    terminationDate: "n/a",
-    avatarSrc: "",
-    company: company,
-    attachedDocs: {},
-  });
+  const { currentUser, setUser, currentUserId } = useContext(UserContext);
+  const [newU, setNewUser] = useState(null);
+  const [imgFile, setImgFile] = useState(null);
+  const [imgUploadLink, setImgUploadLink] = useState(null);
+  const [imgUrl, setImgUrl] = useState(null);
 
   useEffect(() => {
-    setUser({ ...currentUser, userInfo });
-  }, [userInfo]);
+    setNewUser(currentUser.newUser);
+  }, []);
 
   const handleDrop = (ev) => {
     console.log(ev);
     console.log(ev.dataTransfer.files);
-    const profilePicUpload = ev.dataTransfer.files[0];
+    setImgFile(ev.dataTransfer.files[0]);
     console.log("dropped");
   };
 
   useEffect(() => {
     console.log("re-rendering");
-  }, [newUser]);
+  }, [newU]);
 
-  console.log(newUser);
+  const handleImgUpload = () => {
+    console.log("handling upload");
+    setUser({ ...currentUser, avatarSrc: imgUploadLink.split("?")[0] });
+    fetch(`/api/editUser/${currentUserId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...currentUser,
+        avatarSrc: imgUploadLink.split("?")[0],
+      }),
+    }).then(console.log("uploaded"));
+  };
+
+  const handleGetUrl = () => {
+    imgUploadLink && setImgUrl(imgUploadLink.split("?")[0]);
+    console.log("handleGetUser");
+    imgUploadLink && imgFile && handleImgUpload();
+  };
+
+  const handleUploadLink = async (data) => {
+    setImgUploadLink(data);
+  };
+
+  useEffect(() => {
+    imgFile &&
+      fetch("/s3Url")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          handleUploadLink(data.url);
+        });
+  }, [imgFile]);
+
+  useEffect(() => {
+    async function fetchData() {
+      imgUploadLink &&
+        imgFile &&
+        (await fetch(imgUploadLink, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+
+          body: imgFile,
+        }));
+    }
+    async function handleData() {
+      await fetchData();
+      imgUploadLink && handleGetUrl();
+    }
+
+    handleData();
+  }, [imgFile]);
+
+  console.log(currentUser.avatarSrc.length);
+
   return (
     <Wrapper>
       <Sidebar setIsShown={setIsShown} setBgWord={setBgWord} />
@@ -59,42 +93,51 @@ const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
           <HeaderItem>Profile</HeaderItem>
           <HeaderItem>Documents</HeaderItem>
         </ProfileHeader>
-        <FileDrop
-          id="output"
-          draggable="true"
-          onDragEnter={(ev) => {
-            document.getElementById("output").textContent = "";
-            ev.stopPropagation();
-            ev.preventDefault();
-            console.log("dragenter");
-          }}
-          onDragOver={(ev) => {
-            ev.stopPropagation();
-            ev.preventDefault();
-            console.log("dragover");
-          }}
-          onDrop={(ev) => {
-            ev.stopPropagation();
-            ev.preventDefault();
-            console.log("drop");
-            handleDrop(ev);
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
-          <img
-            src={defaultUserPic}
-            alt="default user pic"
-            style={{ height: "90px" }}
-          ></img>
-        </FileDrop>
-        Profile Page
-        {newUser && (
-          <ProfileInputForm setUserInfo={setUserInfo} userInfo={userInfo} />
-        )}
-        {!newUser && (
-          <ProfileInfo setUserInfo={setUserInfo} userInfo={userInfo} />
-        )}
+          <FileDrop
+            draggable="true"
+            onDragEnter={(ev) => {
+              ev.stopPropagation();
+              ev.preventDefault();
+              console.log("dragenter");
+            }}
+            onDragOver={(ev) => {
+              ev.stopPropagation();
+              ev.preventDefault();
+              console.log("dragover");
+            }}
+            onDrop={(ev) => {
+              ev.stopPropagation();
+              ev.preventDefault();
+              console.log("drop");
+              handleDrop(ev);
+            }}
+          >
+            <img
+              src={
+                currentUser.avatarSrc.length > 0
+                  ? currentUser.avatarSrc
+                  : defaultUserPic
+              }
+              alt="default user pic"
+              style={{
+                height: currentUser.avatarSrc.length > 0 ? "100px" : "90px",
+              }}
+            ></img>
+          </FileDrop>
+          <Name>{currentUser.givenName}</Name>
+        </div>
+
+        {newU && <ProfileInputForm />}
+        {!newU && <ProfileInfo />}
       </MainPageWrapper>
-      {isShown && <BackGroundWord>{bgWord.toLowerCase()}</BackGroundWord>}
+      {isShown && <BackGroundWord>{bgWord.toLowerCase()}.</BackGroundWord>}
     </Wrapper>
   );
 };
@@ -114,14 +157,6 @@ const MainPageWrapper = styled.div`
   border-radius: 5px;
   margin: 5px 5px 5px 5px;
   padding: 10px;
-`;
-
-const wordAnimation = keyframes`
- from {
-  opacity 0;
-} to {
-  opacity 1;
-}
 `;
 
 const ProfileHeader = styled.div`
@@ -144,14 +179,27 @@ const HeaderItem = styled.div`
   font-family: "Lausanne650";
 `;
 
+const wordAnimation = keyframes`
+ from {
+  opacity 0;
+} to {
+  opacity 1;
+}
+from {
+  right: 0px;
+} to {
+  right: 40px;
+}
+`;
+
 const BackGroundWord = styled.div`
   position: absolute;
-  right: 20px;
+  right: 40px;
   bottom: 2px;
   font-size: 8em;
-  font-family: "Lausanne650";
+  font-family: "Special Elite";
   color: #d7d7d7;
-  animation: ${wordAnimation} 800ms;
+  animation: ${wordAnimation} 1s;
 `;
 
 const FileDrop = styled.div`
@@ -165,4 +213,10 @@ const FileDrop = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
+`;
+
+const Name = styled.div`
+  font-family: "Special Elite";
+  font-size: 3em;
+  margin-left: 30px;
 `;

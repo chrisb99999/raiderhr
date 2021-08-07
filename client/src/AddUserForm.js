@@ -4,17 +4,18 @@ import styled from "styled-components";
 import { UserContext } from "./CurrentUserContext";
 import { useHistory } from "react-router-dom";
 
-const ProfileInputForm = () => {
+const AddUserForm = ({ setAddUsers }) => {
   const { user } = useAuth0();
   const userEmail = user.email;
-  const { currentUser, setUser, currentUserId } = useContext(UserContext);
+  const [buttonContent, setButtonContent] = useState("Save Changes");
+  const { triggerUpdate, setTrigger, company } = useContext(UserContext);
   let history = useHistory();
   const [tempUserInfo, setTempUserInfo] = useState({
     givenName: "",
     surname: "",
-    email: userEmail,
+    email: "",
     title: "",
-    role: "",
+    role: "User",
     directReports: [],
     reportsTo: "",
     team: "",
@@ -28,6 +29,7 @@ const ProfileInputForm = () => {
     terminationDate: "n/a",
     avatarSrc: "",
     attachedDocs: {},
+    company: company,
   });
 
   const handleInputChange = (ev) => {
@@ -38,24 +40,22 @@ const ProfileInputForm = () => {
     setTempUserInfo({ ...tempUserInfo, [name]: value });
   };
 
-  let buttonContent = "Save Changes";
-
+  const handleSubmission = () => {
+    setAddUsers(false);
+    setTrigger(!triggerUpdate);
+  };
   const handleSubmit = () => {
-    buttonContent = "✓";
-    setUser({
-      ...currentUser,
-      givenName: tempUserInfo.givenName,
-      newUser: false,
-    });
-
-    fetch(`/api/editUser/${currentUserId}`, {
-      method: "PUT",
+    setButtonContent("✓");
+    console.log("handling submit");
+    fetch(`/api/addUser/`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...currentUser, ...tempUserInfo, newUser: false }),
+      body: JSON.stringify({ ...tempUserInfo, newUser: false }),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        handleSubmission();
         history.push("/home");
       });
   };
@@ -67,7 +67,7 @@ const ProfileInputForm = () => {
           <Label>Given Name</Label>
           <Input
             name="givenName"
-            placeholder={currentUser.givenName}
+            placeholder={tempUserInfo.givenName}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -75,19 +75,23 @@ const ProfileInputForm = () => {
           <Label>Family Name</Label>
           <Input
             name="surname"
-            placeholder={currentUser.surname}
+            placeholder={tempUserInfo.surname}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
         <RowWrap>
           <Label>Email</Label>
-          <Input disabled={true} value={user.email}></Input>
+          <Input
+            name="email"
+            value={tempUserInfo.email}
+            onChange={handleInputChange}
+          ></Input>
         </RowWrap>
         <RowWrap>
           <Label>Title</Label>
           <Input
             name="title"
-            placeholder={currentUser.title}
+            placeholder={tempUserInfo.title}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -95,7 +99,7 @@ const ProfileInputForm = () => {
           <Label>Role</Label>
           <Input
             name="role"
-            placeholder={currentUser.role}
+            value={tempUserInfo.role}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -103,7 +107,7 @@ const ProfileInputForm = () => {
           <Label>Reports to:</Label>
           <Input
             name="reportsTo"
-            placeholder={currentUser.reportsTo}
+            placeholder={tempUserInfo.reportsTo}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -111,7 +115,7 @@ const ProfileInputForm = () => {
           <Label>Team:</Label>
           <Input
             name="team"
-            placeholder={currentUser.team}
+            placeholder={tempUserInfo.team}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -120,7 +124,7 @@ const ProfileInputForm = () => {
           <Input
             name="salary"
             type="number"
-            placeholder={currentUser.salary}
+            placeholder={tempUserInfo.salary}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -128,7 +132,7 @@ const ProfileInputForm = () => {
           <Label>Address</Label>
           <Input
             name="address"
-            placeholder={currentUser.address}
+            placeholder={tempUserInfo.address}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -136,7 +140,7 @@ const ProfileInputForm = () => {
           <Label>Country</Label>
           <Input
             name="country"
-            placeholder={currentUser.country}
+            placeholder={tempUserInfo.country}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -144,7 +148,7 @@ const ProfileInputForm = () => {
           <Label>Postal Code</Label>
           <Input
             name="postalCode"
-            placeholder={currentUser.postalCode}
+            placeholder={tempUserInfo.postalCode}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -153,7 +157,7 @@ const ProfileInputForm = () => {
           <Input
             name="birthday"
             type="date"
-            placeholder={currentUser.birthday}
+            placeholder={tempUserInfo.birthday}
             onChange={handleInputChange}
           ></Input>
         </RowWrap>
@@ -167,11 +171,13 @@ const ProfileInputForm = () => {
   );
 };
 
-export default ProfileInputForm;
+export default AddUserForm;
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 const RowWrap = styled.div`
@@ -194,4 +200,8 @@ const Button = styled.button`
   color: white;
   border-radius: 10px;
   border: 1px black solid;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;

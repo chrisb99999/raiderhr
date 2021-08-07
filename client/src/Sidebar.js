@@ -5,7 +5,7 @@ import SideLink from "./SideLink";
 
 const Sidebar = ({ setIsShown, setBgWord }) => {
   const { company } = useContext(UserContext);
-  console.log(company);
+
   return (
     <Wrapper>
       {company && <CompanyName>@{company}</CompanyName>}

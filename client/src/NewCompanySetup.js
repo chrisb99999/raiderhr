@@ -3,14 +3,24 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import Modal from "./Modal";
 import { UserContext } from "./CurrentUserContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const NewCompanySetup = ({ userCompany }) => {
   const [coNameModal, setCoName] = useState(false);
   const [companyName, setCompanyName] = useState(null);
   const [companyDoesNotExist, setCompanyDoesNotExist] = useState(true);
   const [companies, setCompanies] = useState(null);
-  const { company, setCompany } = useContext(UserContext);
-  const [render, setRender] = useState(false);
+  const {
+    company,
+    setCompany,
+    setUser,
+    currentUser,
+    currentUserId,
+    setCurrentUserId,
+  } = useContext(UserContext);
+
+  const { user } = useAuth0();
+  const usermail = user.email;
 
   let history = useHistory();
 
@@ -19,22 +29,53 @@ const NewCompanySetup = ({ userCompany }) => {
   };
 
   const handleNewCompany = () => {
-    fetch(`api/addCompany/${companyName}`, {
-      method: "PUT",
+    fetch(`api/addUser/`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        givenName: "Fake",
+        surname: "Name",
+        email: usermail,
+        title: "Chief of Awesomeness",
+        role: "User",
+        directReports: [],
+        reportsTo: "Terry Rossio",
+        team: "engineering",
+        salary: 5000,
+        address: "123 Fake Street",
+        country: "Canada",
+        postalCode: "H1A 1A1",
+        birthday: new Date("02/12/31"),
+        startDate: new Date("20/12/31"),
+        status: "active",
+        terminationDate: "n/a",
+        avatarSrc: "",
+        company: companyName,
+        newUser: true,
+        attachedDocs: [],
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        setRender(!render);
-      });
+        setCurrentUserId(data.user.insertedId);
+      })
+      .then(history.push("/home"));
   };
 
   useEffect(() => {
-    fetch("/api/companyList")
+    fetch(`/api/user/${currentUserId}`)
       .then((res) => res.json())
       .then((data) => {
-        setCompanies(data.companies[0].companies);
+        setUser(data.user);
+      });
+  }, [currentUserId]);
+
+  useEffect(() => {
+    fetch("/api/companies")
+      .then((res) => res.json())
+      .then((data) => {
+        setCompanies(data.result);
       });
   }, [coNameModal]);
 
@@ -45,7 +86,7 @@ const NewCompanySetup = ({ userCompany }) => {
     }
   }, [companies]);
 
-  console.log(companyName, userCompany, companies, company);
+  console.log(companyName, userCompany, companies, company, currentUser);
   return (
     <Wrapper>
       <Text>Looks like it's you're new here...</Text>

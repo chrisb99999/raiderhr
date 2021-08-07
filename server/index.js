@@ -3,15 +3,16 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const { generateUploadURL } = require("./s3");
 
 const {
   getCompanies,
   addTestUser,
-  addCompany,
-  addTestCo,
-  getCompanyList,
+  getUserById,
+  getUserByEmail,
+  editUserById,
   addUser,
-  getUsersByCompany,
+  getUsersByCo,
 } = require("./handlers");
 const PORT = 4000;
 express()
@@ -34,11 +35,15 @@ express()
 
   //endpoints
   .get("/api/companies", getCompanies)
-  .get("/api/companyList", getCompanyList)
-  .get("/api/users/:companyName", getUsersByCompany)
+  .get("/api/user/:userid", getUserById)
+  .get("/api/usersbyco/:company", getUsersByCo)
+  .get("/api/userbyemail/:email", getUserByEmail)
   .post("/api/test/user", addTestUser)
-  .post("/api/test/co", addTestCo)
-  .put("/api/addCompany/:companyName", addCompany)
-  .put("/api/addUser/:companyName", addUser)
+  .put("/api/editUser/:userid", editUserById)
+  .post("/api/addUser/", addUser)
+  .get("/s3Url", async (req, res) => {
+    const url = await generateUploadURL();
+    res.send({ url });
+  })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
