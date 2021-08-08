@@ -6,9 +6,17 @@ import { UserContext } from "./CurrentUserContext";
 
 import ProfileInputForm from "./ProfileInputForm";
 import ProfileInfo from "./ProfileInfo";
+import UserAvatar from "./UserAvatar";
 
 const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
-  const { currentUser, setUser, currentUserId } = useContext(UserContext);
+  const {
+    currentUser,
+    setUser,
+    currentUserId,
+    allEmployees,
+    triggerUser,
+    setTriggerUser,
+  } = useContext(UserContext);
   const [newU, setNewUser] = useState(null);
   const [imgFile, setImgFile] = useState(null);
   const [imgUploadLink, setImgUploadLink] = useState(null);
@@ -46,6 +54,7 @@ const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
     imgUploadLink && setImgUrl(imgUploadLink.split("?")[0]);
     console.log("handleGetUser");
     imgUploadLink && imgFile && handleImgUpload();
+    setTriggerUser(!triggerUser);
   };
 
   const handleUploadLink = async (data) => {
@@ -82,8 +91,6 @@ const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
 
     handleData();
   }, [imgFile]);
-
-  console.log(currentUser.avatarSrc.length);
 
   return (
     <Wrapper>
@@ -133,9 +140,41 @@ const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
           </FileDrop>
           <Name>{currentUser.givenName}</Name>
         </div>
-
-        {newU && <ProfileInputForm />}
-        {!newU && <ProfileInfo />}
+        <WrapProfileInner>
+          {newU && <ProfileInputForm />}
+          {!newU && <ProfileInfo />}
+          <ProfileSideInner>
+            <VacationBooker>Vacay booker</VacationBooker>
+            <OtherEmployees>
+              <Header>Your other employees</Header>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                {allEmployees &&
+                  allEmployees.map((element, index) => {
+                    if (element.email === currentUser.email) {
+                      return <></>;
+                    } else if (index > 3) {
+                      return <></>;
+                    } else {
+                      return <UserAvatar user={element} />;
+                    }
+                  })}
+              </div>
+            </OtherEmployees>
+          </ProfileSideInner>
+        </WrapProfileInner>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path
+            fill="#ffeed2"
+            fill-opacity="1"
+            d="M0,96L21.8,85.3C43.6,75,87,53,131,69.3C174.5,85,218,139,262,181.3C305.5,224,349,256,393,240C436.4,224,480,160,524,144C567.3,128,611,160,655,192C698.2,224,742,256,785,240C829.1,224,873,160,916,128C960,96,1004,96,1047,85.3C1090.9,75,1135,53,1178,74.7C1221.8,96,1265,160,1309,208C1352.7,256,1396,288,1418,304L1440,320L1440,320L1418.2,320C1396.4,320,1353,320,1309,320C1265.5,320,1222,320,1178,320C1134.5,320,1091,320,1047,320C1003.6,320,960,320,916,320C872.7,320,829,320,785,320C741.8,320,698,320,655,320C610.9,320,567,320,524,320C480,320,436,320,393,320C349.1,320,305,320,262,320C218.2,320,175,320,131,320C87.3,320,44,320,22,320L0,320Z"
+          ></path>
+        </svg>
       </MainPageWrapper>
       {isShown && <BackGroundWord>{bgWord.toLowerCase()}.</BackGroundWord>}
     </Wrapper>
@@ -152,7 +191,7 @@ const Wrapper = styled.div`
 `;
 const MainPageWrapper = styled.div`
   width: 80%;
-  height: 90vh;
+  height: 100%;
   background-color: white;
   border-radius: 5px;
   margin: 5px 5px 5px 5px;
@@ -219,4 +258,37 @@ const Name = styled.div`
   font-family: "Special Elite";
   font-size: 3em;
   margin-left: 30px;
+`;
+
+const WrapProfileInner = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 50%;
+`;
+
+const ProfileSideInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+`;
+
+const VacationBooker = styled.div`
+  height: 200px;
+`;
+
+const OtherEmployees = styled.div`
+  height: 50%;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background-color: #fcfcfc;
+  border: 1px solid orange;
+  padding: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+`;
+
+const Header = styled.header`
+  margin-bottom: 10px;
 `;

@@ -65,14 +65,22 @@ export default ProfileInfo;
 
 const Wrapper = styled.div`
   margin-top: 10px;
-  margin-left: 50px;
-  padding: 10px;
+  margin-left: 40px;
+  margin-right: 40px;
+  border-radius: 10px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 35%;
+  background-color: #fcfcfc;
+  border: 1px solid orange;
+  padding: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 `;
 const ProfileItem = styled.div`
   margin-top: 10px;
+
+  margin-left: 20px;
   justify-content: space-between;
   width: 100%;
 `;

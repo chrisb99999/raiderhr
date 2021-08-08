@@ -38,9 +38,17 @@ export default createGlobalStyle`
 
     html, body, div,
   input, button, select, option,
-  h1, h2, h3, h4, h5, h6, p,
+   p,
   text {
       font-family: 'Lausanne300';
+      margin: 0;
+      box-sizing: border-box;   
+  }
+
+
+  h1, h2, h3, h4, h5, h6, 
+  header {
+      font-family: 'Lausanne650';
       margin: 0;
       box-sizing: border-box;   
   }

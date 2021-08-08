@@ -13,6 +13,9 @@ const {
   editUserById,
   addUser,
   getUsersByCo,
+  addJob,
+  getJobs,
+  getJobById,
 } = require("./handlers");
 const PORT = 4000;
 express()
@@ -41,6 +44,9 @@ express()
   .post("/api/test/user", addTestUser)
   .put("/api/editUser/:userid", editUserById)
   .post("/api/addUser/", addUser)
+  .post("/api/addjob/", addJob)
+  .get("/api/getJobs/", getJobs)
+  .get("/api/job/:id", getJobById)
   .get("/s3Url", async (req, res) => {
     const url = await generateUploadURL();
     res.send({ url });

@@ -16,6 +16,7 @@ const Sidebar = ({ setIsShown, setBgWord }) => {
         setBgWord={setBgWord}
       />
       <SideLink setIsShown={setIsShown} name={"People"} setBgWord={setBgWord} />
+      <SideLink setIsShown={setIsShown} name={"Jobs"} setBgWord={setBgWord} />
     </Wrapper>
   );
 };
@@ -24,7 +25,7 @@ export default Sidebar;
 
 const Wrapper = styled.div`
   width: 17%;
-  height: 90vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

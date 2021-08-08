@@ -8,59 +8,120 @@ import UserHomePage from "./UserHomePage";
 import ErrorPage from "./404Page";
 import People from "./People";
 import Profile from "./Profile";
+import Jobs from "./Jobs";
+import AddJobs from "./AddJobs";
+import Applications from "./Applications";
+
+import JobListing from "./JobListing";
 
 function App() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { isAuthenticated } = useAuth0();
   const [isShown, setIsShown] = useState(false);
   const [bgWord, setBgWord] = useState("");
 
   return (
     <BrowserRouter>
       <GlobalStyles />
-      <Header />
+
       <Switch>
         <Route exact path="/">
           {isAuthenticated && (
-            <UserHomePage
-              setIsShown={setIsShown}
-              setBgWord={setBgWord}
-              bgWord={bgWord}
-              isShown={isShown}
-            />
+            <>
+              <Header />
+              <UserHomePage
+                setIsShown={setIsShown}
+                setBgWord={setBgWord}
+                bgWord={bgWord}
+                isShown={isShown}
+              />
+            </>
           )}
           {!isAuthenticated && <LandingPage />}
         </Route>
 
         {isAuthenticated && (
           <Route exact path="/home">
-            <UserHomePage
-              setIsShown={setIsShown}
-              setBgWord={setBgWord}
-              bgWord={bgWord}
-              isShown={isShown}
-            />
+            <>
+              <Header />
+              <UserHomePage
+                setIsShown={setIsShown}
+                setBgWord={setBgWord}
+                bgWord={bgWord}
+                isShown={isShown}
+              />
+            </>
           </Route>
         )}
         {isAuthenticated && (
           <Route exact path="/people">
-            <People
-              setIsShown={setIsShown}
-              setBgWord={setBgWord}
-              bgWord={bgWord}
-              isShown={isShown}
-            />
+            <>
+              <Header />
+              <People
+                setIsShown={setIsShown}
+                setBgWord={setBgWord}
+                bgWord={bgWord}
+                isShown={isShown}
+              />
+            </>
           </Route>
         )}
         {isAuthenticated && (
           <Route exact path="/profile">
-            <Profile
-              setIsShown={setIsShown}
-              setBgWord={setBgWord}
-              bgWord={bgWord}
-              isShown={isShown}
-            />
+            <>
+              <Header />
+              <Profile
+                setIsShown={setIsShown}
+                setBgWord={setBgWord}
+                bgWord={bgWord}
+                isShown={isShown}
+              />
+            </>
           </Route>
         )}
+        {isAuthenticated && (
+          <Route exact path="/jobs">
+            <>
+              <Header />
+              <Jobs
+                setIsShown={setIsShown}
+                setBgWord={setBgWord}
+                bgWord={bgWord}
+                isShown={isShown}
+              />
+            </>
+          </Route>
+        )}
+        {isAuthenticated && (
+          <Route path="/addjobs">
+            <>
+              <Header />
+              <AddJobs
+                setIsShown={setIsShown}
+                setBgWord={setBgWord}
+                bgWord={bgWord}
+                isShown={isShown}
+              />
+            </>
+          </Route>
+        )}
+        {isAuthenticated && (
+          <Route path="/jobApps/:id">
+            <>
+              <Header />
+              <Applications
+                setIsShown={setIsShown}
+                setBgWord={setBgWord}
+                bgWord={bgWord}
+                isShown={isShown}
+              />
+            </>
+          </Route>
+        )}
+
+        <Route exact path="/job/:id">
+          <JobListing />
+        </Route>
+
         <Route path="">
           <ErrorPage />
         </Route>

@@ -27,12 +27,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Special+Elite&display=swap" rel="stylesheet">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script type="text/javascript">
+(function() {
+emailjs.init("user_I7X5djmfD17UTn3NgP4vE");
+})();
+</script>
     <title>Raider HR</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <div id="modal-root"></div>
+    <div id="modal-root" height="0" width="0"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -44,4 +50,5 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+ 
 </html>

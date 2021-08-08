@@ -42,12 +42,11 @@ const getUsersByCo = async (req, res) => {
   let users = [];
 
   result.forEach((element) => {
-    console.log(element);
     element.company.toLowerCase() === searchTerm.toLowerCase()
       ? users.push(element)
       : undefined;
   });
-  console.log(users);
+
   if (users.length > 0) {
     res.status(200).json({ status: 200, result: users });
   } else {
@@ -198,6 +197,71 @@ const editUserById = async (req, res) => {
   console.log("disconnected!");
 };
 
+const getJobs = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("RaiderHR");
+  console.log("connected to db");
+
+  try {
+    const jobs = await db.collection("jobs").findOne({ _id: req.params.id });
+
+    if (jobs) {
+      res.status(200).json({ status: 200, result: jobs });
+    } else {
+      res.status(500).json({ status: 500, error: "No job found." });
+    }
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  }
+
+  client.close();
+  console.log("disconnected from db");
+};
+
+const getJobById = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("RaiderHR");
+  console.log("connected to db");
+
+  try {
+    const jobs = await db.collection("jobs").find().toArray();
+
+    if (jobs.length > 0) {
+      res.status(200).json({ status: 200, result: jobs });
+    } else {
+      res.status(500).json({ status: 500, error: "No jobs found." });
+    }
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  }
+
+  client.close();
+  console.log("disconnected from db");
+};
+
+const addJob = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("RaiderHR");
+  console.log("connected to db");
+  const _id = uuidv4();
+
+  const job = { _id: _id, ...req.body };
+
+  try {
+    console.log(job);
+    const result = await db.collection("jobs").insertOne(job);
+    res.status(201).json({ status: 201, result: result });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  }
+
+  client.close();
+  console.log("disconnected from db");
+};
+
 module.exports = {
   addTestUser,
   getCompanies,
@@ -206,4 +270,7 @@ module.exports = {
   editUserById,
   getUserByEmail,
   getUsersByCo,
+  getJobs,
+  addJob,
+  getJobById,
 };

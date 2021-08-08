@@ -7,12 +7,14 @@ import NewCompanySetup from "./NewCompanySetup";
 import { UserContext } from "./CurrentUserContext";
 import tumble from "./assets/tumbleweed-colour.png";
 import cricket from "./assets/cricket.png";
+import { useHistory } from "react-router-dom";
 
 const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
   const [companyList, setCompanyList] = useState(null);
   const [newCo, setNewCo] = useState(null);
   const [addUsersClicked, setAddUsers] = useState(false);
   const [imgSrc, setimgSrc] = useState(true);
+  let history = useHistory();
   const { user } = useAuth0();
   const email = user.email;
   const {
@@ -20,16 +22,19 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
     setUser,
     setCurrentUserId,
     setCompany,
-    allEmployees,
+    triggerUpdate,
     headcount,
     globalSalary,
+    jobs,
   } = useContext(UserContext);
 
+  // get the user company from the email address
   const userCompany = user.email.slice(
     user.email.indexOf("@") + 1,
     user.email.indexOf(".")
   );
 
+  // sets random bg icon
   useEffect(() => {
     if (Math.random() > 0.5) {
       setimgSrc(tumble);
@@ -38,6 +43,7 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
     }
   }, []);
 
+  // gets list of companies to lookup user email domain against
   useEffect(() => {
     fetch("/api/companies")
       .then((res) => {
@@ -48,6 +54,7 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
       });
   }, []);
 
+  // defines whether users email domain is an existing company
   useEffect(() => {
     if (companyList) {
       setNewCo(companyList.includes(userCompany) ? false : true);
@@ -57,6 +64,7 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
     }
   }, [companyList]);
 
+  // gets user data and sets the current user
   useEffect(() => {
     fetch(`/api/userbyemail/${email}`)
       .then((res) => res.json())
@@ -65,9 +73,7 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
 
         data.user && setCurrentUserId(data.user._id);
       });
-  }, []);
-
-  console.log(allEmployees);
+  }, [triggerUpdate]);
 
   return (
     <Wrapper>
@@ -97,6 +103,15 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
                 burn on salaries is $
                 {Number(globalSalary / 12).toLocaleString()}.{" "}
               </CalltoAction>
+              {jobs && (
+                <CalltoAction
+                  onClick={() => {
+                    history.push("/jobs");
+                  }}
+                >
+                  You have {jobs.length} open job listings.
+                </CalltoAction>
+              )}
             </div>
           )}
           <Image>
@@ -107,6 +122,13 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
             />
           </Image>
         </InternalWrapper>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path
+            fill="#ffeed2"
+            fill-opacity="1"
+            d="M0,128L34.3,112C68.6,96,137,64,206,90.7C274.3,117,343,203,411,234.7C480,267,549,245,617,240C685.7,235,754,245,823,224C891.4,203,960,149,1029,138.7C1097.1,128,1166,160,1234,176C1302.9,192,1371,192,1406,192L1440,192L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"
+          ></path>
+        </svg>
       </MainPageWrapper>
 
       {isShown && (
@@ -126,7 +148,7 @@ const Wrapper = styled.div`
 `;
 const MainPageWrapper = styled.div`
   width: 80%;
-  height: 90vh;
+  height: 100%;
   background-color: white;
   border-radius: 5px;
   margin: 5px 5px 5px 5px;

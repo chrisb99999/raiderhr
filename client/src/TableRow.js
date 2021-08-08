@@ -6,14 +6,14 @@ const TableRow = ({ employeeData, selectedColumns }) => {
     <Wrapper>
       {selectedColumns.map((element) => {
         let returnText = employeeData[element];
-        console.log(returnText);
+
         if (element === "salary") {
           returnText = "$" + Number(returnText).toLocaleString();
         }
         if (element === "Name") {
           returnText = employeeData.givenName + " " + employeeData.surname;
         }
-        return <td>{returnText}</td>;
+        return <td style={{ padding: "10px" }}>{returnText}</td>;
       })}
     </Wrapper>
   );

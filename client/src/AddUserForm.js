@@ -3,12 +3,20 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { UserContext } from "./CurrentUserContext";
 import { useHistory } from "react-router-dom";
+import { init } from "emailjs-com";
+import { dotenv } from "dotenv";
 
 const AddUserForm = ({ setAddUsers }) => {
+  const { triggerUpdate, setTrigger, company, currentUser } =
+    useContext(UserContext);
+  init("user_I7X5djmfD17UTn3NgP4vE");
+  const serviceId = "service_wmz3dud";
+  const templateId = "template_aikbfjj";
+  const [templateParams, setTemplateParams] = useState();
   const { user } = useAuth0();
   const userEmail = user.email;
   const [buttonContent, setButtonContent] = useState("Save Changes");
-  const { triggerUpdate, setTrigger, company } = useContext(UserContext);
+
   let history = useHistory();
   const [tempUserInfo, setTempUserInfo] = useState({
     givenName: "",
@@ -41,24 +49,42 @@ const AddUserForm = ({ setAddUsers }) => {
   };
 
   const handleSubmission = () => {
+    let templateParams = {
+      from_name: currentUser.givenName,
+      to_name: tempUserInfo.givenName,
+      message: `Hey! ${currentUser.givenName} just added you to ${company} on RaiderHR!`,
+      to_email: tempUserInfo.email,
+      reply_to: currentUser.email,
+    };
+
     setAddUsers(false);
     setTrigger(!triggerUpdate);
+    window.emailjs.send(serviceId, templateId, templateParams).then(
+      function (response) {
+        console.log("SUCCESS!", response.status, response.text);
+      },
+      function (error) {
+        console.log("FAILED...", error);
+      }
+    );
   };
-  const handleSubmit = () => {
+
+  const updateTemplate = () => {
+    handleSubmission();
+    history.push("/home");
+  };
+  const handleSubmit = async () => {
     setButtonContent("✓");
     console.log("handling submit");
-    fetch(`/api/addUser/`, {
+    await fetch(`/api/addUser/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...tempUserInfo, newUser: false }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        handleSubmission();
-        history.push("/home");
-      });
+      .then(() => updateTemplate());
   };
+  console.log("params", templateParams);
 
   return (
     <Wrapper>
