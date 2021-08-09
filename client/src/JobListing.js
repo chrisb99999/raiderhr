@@ -4,27 +4,47 @@ import styled from "styled-components";
 import ApplicationForm from "./ApplicationForm";
 
 const JobListing = () => {
-  const id = useParams();
+  const { id } = useParams();
   const [job, setJob] = useState(null);
   const [salary, setSalary] = useState(null);
   const [apply, setApply] = useState(false);
+  const [appInfo, setJobInfo] = useState(null);
+  const [applied, setApplied] = useState(false);
+
+  console.log(id);
 
   const setItems = (job) => {
+    console.log(job);
     setJob(job);
     setSalary(Number(job.comp).toLocaleString());
+    setJobInfo({ jobId: id });
   };
   useEffect(() => {
     fetch(`/api/job/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setItems(data.result[0]);
-
         console.log(data);
+        setItems(data.result);
       });
   }, []);
 
   const handleClick = () => {
     setApply(true);
+  };
+
+  const handleSubmit = () => {
+    fetch(`/api/jobApplication/${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(appInfo),
+    });
+
+    document.getElementById("app-form").reset();
+    setApplied(true);
+    setTimeout(() => {
+      setApplied(false);
+      setApply(false);
+    }, 2000);
   };
 
   return (
@@ -53,7 +73,7 @@ const JobListing = () => {
                 <div
                   style={{
                     position: "relative",
-                    top: "-180px",
+                    transform: "translateY(-40%)",
                     padding: "20px",
                   }}
                 >
@@ -79,14 +99,48 @@ const JobListing = () => {
                     <h4 style={{ marginBottom: "15px" }}>Salary: </h4>
                     <p>Up to ${salary}</p>
                   </JDSection>
-                  <div style={{ display: "flex", justifyContent: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
                     <ApplyButton onClick={handleClick}>APPLY</ApplyButton>
+                    <div
+                      style={{ fontFamily: "Special Elite", marginTop: "40px" }}
+                    >
+                      powered by raiderhr.
+                    </div>
                   </div>
                 </div>{" "}
               </>
             )}
 
-            {apply && <ApplicationForm job={job} />}
+            {apply && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <ApplicationForm
+                  job={job}
+                  setJobInfo={setJobInfo}
+                  jobInfo={appInfo}
+                />
+                <ApplyButton onClick={handleSubmit}>
+                  SUBMIT APPLICATION
+                </ApplyButton>
+                {applied && (
+                  <div style={{ padding: "20px" }}>Application submitted!</div>
+                )}
+                <div style={{ fontFamily: "Special Elite", marginTop: "40px" }}>
+                  powered by raiderhr.
+                </div>
+              </div>
+            )}
           </InternalWrap>
         </>
       )}
@@ -107,6 +161,9 @@ const Header = styled.header`
   height: 200px;
   width: 100vw;
   color: black;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
 `;
 
 const InternalWrap = styled.div`

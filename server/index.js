@@ -4,6 +4,7 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const { generateUploadURL } = require("./s3");
+const { testSign } = require("./hellosign");
 
 const {
   getCompanies,
@@ -16,6 +17,11 @@ const {
   addJob,
   getJobs,
   getJobById,
+  getJobsByCo,
+  editJobById,
+  addJobApplication,
+  getApplicationsByJobId,
+  editApplicationById,
 } = require("./handlers");
 const PORT = 4000;
 express()
@@ -42,10 +48,16 @@ express()
   .get("/api/usersbyco/:company", getUsersByCo)
   .get("/api/userbyemail/:email", getUserByEmail)
   .post("/api/test/user", addTestUser)
-  .put("/api/editUser/:userid", editUserById)
+  .put("/api/editUser/:userid", editUserById) // Replaces the whole user -- you must give it the deconstructed user
+  .put("/api/editJob/:id", editJobById) // Replaces the whole job -- you must give it the deconstructed job
   .post("/api/addUser/", addUser)
+  .post("/api/jobApplication/:id", addJobApplication)
+  .get("/api/applcations/byJobId/:id", getApplicationsByJobId)
+  .post("/api/application/offer", testSign)
+  .put("/api/application/edit/:id", editApplicationById)
   .post("/api/addjob/", addJob)
   .get("/api/getJobs/", getJobs)
+  .get("/api/jobs/co/:name", getJobsByCo)
   .get("/api/job/:id", getJobById)
   .get("/s3Url", async (req, res) => {
     const url = await generateUploadURL();

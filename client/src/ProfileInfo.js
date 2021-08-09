@@ -64,7 +64,6 @@ const ProfileInfo = () => {
 export default ProfileInfo;
 
 const Wrapper = styled.div`
-  margin-top: 10px;
   margin-left: 40px;
   margin-right: 40px;
   border-radius: 10px;

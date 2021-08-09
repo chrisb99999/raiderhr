@@ -38,13 +38,13 @@ export const UserProvider = ({ children }) => {
   }, [currentUser, company, allEmployees, triggerUpdate]);
 
   useEffect(() => {
-    fetch("/api/getJobs")
+    fetch(`/api/jobs/co/${company}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
         setJobs(data.result);
       });
-  }, [currentUser, triggerJobs]);
+  }, [currentUser, triggerJobs, company]);
 
   return (
     <UserContext.Provider

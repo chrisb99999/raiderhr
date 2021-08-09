@@ -1,10 +1,8 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { UserContext } from "./CurrentUserContext";
 import { useHistory } from "react-router-dom";
 import { init } from "emailjs-com";
-import { dotenv } from "dotenv";
 
 const AddUserForm = ({ setAddUsers }) => {
   const { triggerUpdate, setTrigger, company, currentUser } =
@@ -12,9 +10,7 @@ const AddUserForm = ({ setAddUsers }) => {
   init("user_I7X5djmfD17UTn3NgP4vE");
   const serviceId = "service_wmz3dud";
   const templateId = "template_aikbfjj";
-  const [templateParams, setTemplateParams] = useState();
-  const { user } = useAuth0();
-  const userEmail = user.email;
+
   const [buttonContent, setButtonContent] = useState("Save Changes");
 
   let history = useHistory();
@@ -84,17 +80,22 @@ const AddUserForm = ({ setAddUsers }) => {
       .then((res) => res.json())
       .then(() => updateTemplate());
   };
-  console.log("params", templateParams);
 
   return (
     <Wrapper>
-      <form style={{ display: "flex", flexDirection: "column" }}>
+      <form
+        style={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <RowWrap>
           <Label>Given Name</Label>
           <Input
             name="givenName"
             placeholder={tempUserInfo.givenName}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -103,6 +104,7 @@ const AddUserForm = ({ setAddUsers }) => {
             name="surname"
             placeholder={tempUserInfo.surname}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -111,6 +113,7 @@ const AddUserForm = ({ setAddUsers }) => {
             name="email"
             value={tempUserInfo.email}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -119,15 +122,22 @@ const AddUserForm = ({ setAddUsers }) => {
             name="title"
             placeholder={tempUserInfo.title}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
           <Label>Role</Label>
-          <Input
+          <select
+            id="role"
             name="role"
-            value={tempUserInfo.role}
+            style={{ width: "40%", height: "22px" }}
             onChange={handleInputChange}
-          ></Input>
+            required={true}
+            value="User"
+          >
+            <option value="Admin">Admin</option>
+            <option value="User">User</option>
+          </select>
         </RowWrap>
         <RowWrap>
           <Label>Reports to:</Label>
@@ -135,6 +145,7 @@ const AddUserForm = ({ setAddUsers }) => {
             name="reportsTo"
             placeholder={tempUserInfo.reportsTo}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -143,6 +154,7 @@ const AddUserForm = ({ setAddUsers }) => {
             name="team"
             placeholder={tempUserInfo.team}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -152,6 +164,7 @@ const AddUserForm = ({ setAddUsers }) => {
             type="number"
             placeholder={tempUserInfo.salary}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -160,6 +173,7 @@ const AddUserForm = ({ setAddUsers }) => {
             name="address"
             placeholder={tempUserInfo.address}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -168,6 +182,7 @@ const AddUserForm = ({ setAddUsers }) => {
             name="country"
             placeholder={tempUserInfo.country}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -176,6 +191,7 @@ const AddUserForm = ({ setAddUsers }) => {
             name="postalCode"
             placeholder={tempUserInfo.postalCode}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -185,6 +201,7 @@ const AddUserForm = ({ setAddUsers }) => {
             type="date"
             placeholder={tempUserInfo.birthday}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -209,6 +226,8 @@ const Wrapper = styled.div`
 const RowWrap = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  margin-bottom: 10px;
 `;
 
 const Label = styled.label`

@@ -36,7 +36,12 @@ function App() {
               />
             </>
           )}
-          {!isAuthenticated && <LandingPage />}
+          {!isAuthenticated && (
+            <>
+              <Header />
+              <LandingPage />
+            </>
+          )}
         </Route>
 
         {isAuthenticated && (

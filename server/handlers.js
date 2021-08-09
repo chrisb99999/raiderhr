@@ -197,7 +197,7 @@ const editUserById = async (req, res) => {
   console.log("disconnected!");
 };
 
-const getJobs = async (req, res) => {
+const getJobById = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   await client.connect();
   const db = client.db("RaiderHR");
@@ -219,7 +219,7 @@ const getJobs = async (req, res) => {
   console.log("disconnected from db");
 };
 
-const getJobById = async (req, res) => {
+const getJobs = async (req, res) => {
   const client = new MongoClient(MONGO_URI, options);
   await client.connect();
   const db = client.db("RaiderHR");
@@ -262,6 +262,128 @@ const addJob = async (req, res) => {
   console.log("disconnected from db");
 };
 
+const getJobsByCo = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("RaiderHR");
+  console.log("connected to db");
+  const company = req.params.name;
+
+  console.log(company);
+  try {
+    const jobs = await db
+      .collection("jobs")
+      .find({ company: company })
+      .toArray();
+    console.log(jobs);
+    if (jobs.length > 0) {
+      res.status(200).json({ status: 200, result: jobs });
+    } else {
+      res.status(500).json({ status: 500, error: "No jobs found." });
+    }
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  }
+
+  client.close();
+  console.log("disconnected from db");
+};
+
+const editJobById = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("RaiderHR");
+  console.log("connected to db");
+
+  let newJobInfo = req.body;
+
+  try {
+    delete newJobInfo["_id"];
+    const jobs = await db
+      .collection("jobs")
+      .replaceOne({ _id: req.params.id }, newJobInfo);
+
+    if (jobs) {
+      res.status(200).json({ status: 200, result: jobs });
+    } else {
+      res.status(500).json({ status: 500, error: "No job found." });
+    }
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  }
+
+  client.close();
+  console.log("disconnected from db");
+};
+
+const addJobApplication = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("RaiderHR");
+  console.log("connected to db");
+  const _id = uuidv4();
+
+  const application = { _id: _id, ...req.body };
+
+  try {
+    console.log(application);
+    const result = await db.collection("applications").insertOne(application);
+    res.status(201).json({ status: 201, result: result });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  }
+
+  client.close();
+  console.log("disconnected from db");
+};
+
+const getApplicationsByJobId = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("RaiderHR");
+  console.log("connected to db");
+  const id = req.params.id;
+
+  try {
+    console.log(id);
+    const result = await db
+      .collection("applications")
+      .find({ jobId: id })
+      .toArray();
+    console.log(result);
+    res.status(201).json({ status: 201, result: result });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  }
+
+  client.close();
+  console.log("disconnected from db");
+};
+
+const editApplicationById = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
+  const db = client.db("RaiderHR");
+  console.log("connected to db");
+  const id = req.params.id;
+  let application = req.body;
+
+  try {
+    delete application["_id"];
+
+    const result = await db
+      .collection("applications")
+      .replaceOne({ _id: id }, application);
+    console.log(result);
+    res.status(201).json({ status: 201, result: result });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err });
+  }
+
+  client.close();
+  console.log("disconnected from db");
+};
+
 module.exports = {
   addTestUser,
   getCompanies,
@@ -273,4 +395,9 @@ module.exports = {
   getJobs,
   addJob,
   getJobById,
+  getJobsByCo,
+  editJobById,
+  addJobApplication,
+  getApplicationsByJobId,
+  editApplicationById,
 };

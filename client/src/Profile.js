@@ -3,10 +3,12 @@ import styled, { keyframes } from "styled-components";
 import Sidebar from "./Sidebar";
 import defaultUserPic from "./assets/user.png";
 import { UserContext } from "./CurrentUserContext";
-
+import missing from "./assets/missing.png";
 import ProfileInputForm from "./ProfileInputForm";
 import ProfileInfo from "./ProfileInfo";
 import UserAvatar from "./UserAvatar";
+import vacation from "./assets/vacation.png";
+import airplane from "./assets/airplane.png";
 
 const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
   const {
@@ -140,33 +142,119 @@ const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
           </FileDrop>
           <Name>{currentUser.givenName}</Name>
         </div>
+        {newU && <ProfileInputForm />}
         <WrapProfileInner>
-          {newU && <ProfileInputForm />}
           {!newU && <ProfileInfo />}
-          <ProfileSideInner>
-            <VacationBooker>Vacay booker</VacationBooker>
-            <OtherEmployees>
-              <Header>Your other employees</Header>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                {allEmployees &&
-                  allEmployees.map((element, index) => {
-                    if (element.email === currentUser.email) {
-                      return <></>;
-                    } else if (index > 3) {
-                      return <></>;
-                    } else {
-                      return <UserAvatar user={element} />;
-                    }
-                  })}
-              </div>
-            </OtherEmployees>
-          </ProfileSideInner>
+          {!newU && (
+            <ProfileSideInner>
+              <VacationBooker>
+                <Header>Book Vacation</Header>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    height: "100%",
+                    paddingTop: "30px",
+                    paddingLeft: "50px",
+                    paddingRight: "50px",
+                  }}
+                >
+                  <img
+                    src={vacation}
+                    alt="vacation-icon"
+                    height="80px"
+                    width="80px"
+                    marginTop="10px"
+                  />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span>Days available: 15</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
+                    <form
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <label style={{ marginBottom: "4px" }}>Book from</label>
+                      <input
+                        type="date"
+                        name="vacationStart"
+                        style={{ marginBottom: "10px" }}
+                      ></input>
+                      <label style={{ marginBottom: "4px" }}>Book to</label>
+                      <input
+                        type="date"
+                        name="vacationEnd"
+                        style={{ marginBottom: "10px" }}
+                      ></input>
+                    </form>
+                  </div>
+                  <div>
+                    <VacationButton>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img
+                          src={airplane}
+                          alt="submit-vacation"
+                          style={{ height: "40px" }}
+                        ></img>
+                      </div>
+                    </VacationButton>{" "}
+                  </div>
+                </div>
+              </VacationBooker>
+              <OtherEmployees>
+                <Header>Your other employees</Header>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                  }}
+                >
+                  {allEmployees && allEmployees.length === 1 && (
+                    <img
+                      src={missing}
+                      alt="no employees"
+                      style={{ height: "100px" }}
+                    ></img>
+                  )}
+                  {allEmployees &&
+                    allEmployees.map((element, index) => {
+                      if (element.email === currentUser.email) {
+                        return <></>;
+                      } else if (index > 3) {
+                        return <></>;
+                      } else {
+                        return <UserAvatar user={element} />;
+                      }
+                    })}
+                </div>
+              </OtherEmployees>
+            </ProfileSideInner>
+          )}
         </WrapProfileInner>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
           <path
@@ -264,6 +352,7 @@ const WrapProfileInner = styled.div`
   display: flex;
   flex-direction: row;
   height: 50%;
+  margin-top: 30px;
 `;
 
 const ProfileSideInner = styled.div`
@@ -274,12 +363,21 @@ const ProfileSideInner = styled.div`
 `;
 
 const VacationBooker = styled.div`
-  height: 200px;
+  height: 50%;
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background-color: #fcfcfc;
+  border: 1px solid orange;
+  padding: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
 `;
 
 const OtherEmployees = styled.div`
   height: 50%;
-  min-height: 200px;
+  min-height: 190px;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
@@ -291,4 +389,15 @@ const OtherEmployees = styled.div`
 
 const Header = styled.header`
   margin-bottom: 10px;
+`;
+
+const VacationButton = styled.button`
+  border: 2px solid black;
+  background: #ffeed2;
+  border-radius: 10px;
+  padding: 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;

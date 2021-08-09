@@ -51,7 +51,7 @@ const Jobs = ({ setIsShown, setBgWord, isShown, bgWord }) => {
           <img
             src={imgSrc}
             alt="nothing-more-img"
-            style={{ height: "100px", width: "100px" }}
+            style={{ height: "80px", width: "80px", marginTop: "20px" }}
           />
         </Image>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">

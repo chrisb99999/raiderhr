@@ -69,6 +69,7 @@ const ProfileInputForm = () => {
             name="givenName"
             placeholder={currentUser.givenName}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -77,6 +78,7 @@ const ProfileInputForm = () => {
             name="surname"
             placeholder={currentUser.surname}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -89,15 +91,22 @@ const ProfileInputForm = () => {
             name="title"
             placeholder={currentUser.title}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
           <Label>Role</Label>
-          <Input
+          <select
+            id="role"
             name="role"
-            placeholder={currentUser.role}
+            style={{ width: "40%", height: "22px" }}
             onChange={handleInputChange}
-          ></Input>
+            required={true}
+            value="Admin"
+          >
+            <option value="Admin">Admin</option>
+            <option value="User">User</option>
+          </select>
         </RowWrap>
         <RowWrap>
           <Label>Reports to:</Label>
@@ -105,6 +114,7 @@ const ProfileInputForm = () => {
             name="reportsTo"
             placeholder={currentUser.reportsTo}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -113,6 +123,7 @@ const ProfileInputForm = () => {
             name="team"
             placeholder={currentUser.team}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -122,6 +133,7 @@ const ProfileInputForm = () => {
             type="number"
             placeholder={currentUser.salary}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -130,6 +142,7 @@ const ProfileInputForm = () => {
             name="address"
             placeholder={currentUser.address}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -138,6 +151,7 @@ const ProfileInputForm = () => {
             name="country"
             placeholder={currentUser.country}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -146,6 +160,7 @@ const ProfileInputForm = () => {
             name="postalCode"
             placeholder={currentUser.postalCode}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <RowWrap>
@@ -155,6 +170,7 @@ const ProfileInputForm = () => {
             type="date"
             placeholder={currentUser.birthday}
             onChange={handleInputChange}
+            required={true}
           ></Input>
         </RowWrap>
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -172,11 +188,15 @@ export default ProfileInputForm;
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 20px;
+  border-radius: 10px;
 `;
 
 const RowWrap = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  margin-bottom: 10px;
 `;
 
 const Label = styled.label`

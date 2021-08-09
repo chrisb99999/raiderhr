@@ -9,7 +9,8 @@ const OpenJob = ({ job }) => {
     history.push(`/jobApps/${job._id}`);
   };
   const handleLive = () => {
-    history.push(`/job/${job._id}`);
+    const win = window.open(`/job/${job._id}`, "_blank");
+    win.focus();
   };
   return (
     <Wrapper>

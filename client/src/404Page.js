@@ -19,6 +19,7 @@ const ErrorPage = () => {
   return (
     <Wrapper>
       <img src={errorPic} alt="404 Page Not Found" />
+
       <p>Redirecting...</p>
     </Wrapper>
   );

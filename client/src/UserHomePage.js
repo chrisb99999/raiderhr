@@ -91,14 +91,17 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
 
               <CalltoAction
                 onClick={() => {
-                  setAddUsers(true);
-                  console.log("click!");
+                  setAddUsers(!addUsersClicked);
                 }}
               >
                 Add users.
               </CalltoAction>
               {addUsersClicked && <AddUserForm setAddUsers={setAddUsers} />}
-              <CalltoAction>
+              <CalltoAction
+                onClick={() => {
+                  history.push("/people");
+                }}
+              >
                 Summary: you have {headcount} employee(s). Your monthly cash
                 burn on salaries is $
                 {Number(globalSalary / 12).toLocaleString()}.{" "}
@@ -118,7 +121,7 @@ const UserHomePage = ({ setIsShown, setBgWord, bgWord, isShown }) => {
             <img
               src={imgSrc}
               alt="nothing-more-img"
-              style={{ height: "100px", width: "100px" }}
+              style={{ height: "80px", width: "80px", marginTop: "20px" }}
             />
           </Image>
         </InternalWrapper>
