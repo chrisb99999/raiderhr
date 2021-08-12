@@ -15,6 +15,7 @@ const LoginButton = () => {
 export default LoginButton;
 
 const Login = styled.a`
+  text-align: center;
   &:hover {
     cursor: pointer;
   }
@@ -26,5 +27,7 @@ const Wrapper = styled.div`
 
   padding: 7px;
   display: flex;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
 `;

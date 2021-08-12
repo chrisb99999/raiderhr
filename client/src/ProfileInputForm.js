@@ -14,7 +14,7 @@ const ProfileInputForm = () => {
     surname: "",
     email: userEmail,
     title: "",
-    role: "",
+    role: "Admin",
     directReports: [],
     reportsTo: "",
     team: "",

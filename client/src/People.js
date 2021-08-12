@@ -152,7 +152,12 @@ const People = ({ isShown, bgWord, setBgWord, setIsShown }) => {
           <img
             src={imgSrc}
             alt="nothing-more-img"
-            style={{ height: "80px", width: "80px", marginTop: "20px" }}
+            style={{
+              height: "80px",
+              width: "80px",
+              marginTop: "10%",
+              marginBottom: "50%",
+            }}
           />
         </Image>
         {isShown && <BackGroundWord>{bgWord.toLowerCase()}.</BackGroundWord>}

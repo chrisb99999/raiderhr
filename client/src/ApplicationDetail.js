@@ -2,13 +2,14 @@ import React, { useContext, useState } from "react";
 import { init } from "emailjs-com";
 import styled from "styled-components";
 import { UserContext } from "./CurrentUserContext";
+import { useHistory } from "react-router-dom";
 
 const ApplicationDetail = ({ application, job }) => {
   const { currentUser, company } = useContext(UserContext);
   init("user_I7X5djmfD17UTn3NgP4vE");
   const serviceId = "service_wmz3dud";
   const templateId = "template_c7v1a8x";
-
+  let history = useHistory();
   const [buttonContent, setButtonContent] = useState("Offer Interview");
   const [jobbuttonContent, setJobButtonContent] = useState(
     "Send Offer and Contract"
@@ -18,7 +19,7 @@ const ApplicationDetail = ({ application, job }) => {
     let templateParams = {
       from_name: currentUser.givenName,
       to_name: application.name,
-      message: `Congratulations! We loved your profile and would like to offeer you an interview at ${company} for the ${job["job-title"]} position.`,
+      message: `Congratulations! We loved your profile and would like to offer you an interview at ${company} for the ${job["job-title"]} position.`,
       to_email: application.email,
       reply_to: currentUser.email,
       job_title: job["job-title"],
@@ -36,6 +37,10 @@ const ApplicationDetail = ({ application, job }) => {
     );
   };
 
+  const getResume = () => {
+    console.log("getting resume");
+    application.resume && history.push(application.resume);
+  };
   const handleContractSend = () => {
     fetch("/api/application/offer", {
       method: "POST",
@@ -51,8 +56,8 @@ const ApplicationDetail = ({ application, job }) => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        setJobButtonContent("✓ - Contract sent");
       });
+    setJobButtonContent("✓ - Contract sent");
   };
   return (
     <Wrapper>
@@ -68,9 +73,29 @@ const ApplicationDetail = ({ application, job }) => {
         <Profile>Profile: {application.profile} </Profile>
         <Profile>Email: {application.email} </Profile>
       </InfoWrap>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Offer onClick={handleContractSend}>{jobbuttonContent}</Offer>
-        <Offer onClick={handleOfferInterview}>{buttonContent}</Offer>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+          {application.resume && (
+            <Resume>
+              <a
+                href={application.resume}
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                Review Resume
+              </a>
+            </Resume>
+          )}
+        </div>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Offer onClick={handleContractSend}>{jobbuttonContent}</Offer>
+          <Offer onClick={handleOfferInterview}>{buttonContent}</Offer>
+        </div>
       </div>
     </Wrapper>
   );
@@ -126,8 +151,29 @@ const Offer = styled.button`
   background: #ffeed2;
   padding: 10px;
   text-align: center;
+  min-width: 150px;
   width: 15%;
   margin: 0 10px 10px 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const Resume = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: black;
+  border-radius: 10px;
+  border: 2px solid black;
+  background: #ffeed2;
+  padding: 10px;
+  text-align: center;
+  min-width: 150px;
+  width: 15%;
+  margin: 10px 10px 10px 10px;
 
   &:hover {
     cursor: pointer;

@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const { generateUploadURL } = require("./s3");
 const { testSign } = require("./hellosign");
-
+const cors = require("cors");
 const {
   getCompanies,
   addTestUser,
@@ -25,6 +25,7 @@ const {
 } = require("./handlers");
 const PORT = 4000;
 express()
+  .use(cors())
   .use(function (req, res, next) {
     res.header(
       "Access-Control-Allow-Methods",

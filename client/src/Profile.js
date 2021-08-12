@@ -29,8 +29,6 @@ const Profile = ({ setIsShown, setBgWord, bgWord, isShown }) => {
   }, []);
 
   const handleDrop = (ev) => {
-    console.log(ev);
-    console.log(ev.dataTransfer.files);
     setImgFile(ev.dataTransfer.files[0]);
     console.log("dropped");
   };

@@ -27,6 +27,7 @@ const HeadWrap = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+  height: 60px;
   padding-top: 10px;
   padding-bottom: 10px;
   background-color: ${({ isAuthenticated }) => {

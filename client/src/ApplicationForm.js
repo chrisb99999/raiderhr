@@ -7,7 +7,11 @@ const ApplicationForm = ({ job, setJobInfo, jobInfo }) => {
   const [resumeDownloadLink, setResumeDownloadLink] = useState(null);
 
   const handleResumeInput = (ev) => {
-    setResume(ev.dataTransfer.files[0]);
+    console.log(ev);
+
+    console.log(ev.target.files[0]);
+
+    setResume(ev.target.files[0]);
   };
 
   const handleInputChange = (ev) => {
@@ -22,6 +26,7 @@ const ApplicationForm = ({ job, setJobInfo, jobInfo }) => {
 
   // update the link on the applicant profile
   const handleResumeUpload = () => {
+    console.log("adding link to jobinfo", jobInfo);
     setJobInfo({
       ...jobInfo,
       resume: resumeUploadLink.split("?")[0],
@@ -37,21 +42,25 @@ const ApplicationForm = ({ job, setJobInfo, jobInfo }) => {
   // set the Upload link received below
   const handleUploadLink = async (data) => {
     setResumeUploadLink(data);
+    handleGetUrl();
   };
 
   // get the upload link from S3/AWS
   useEffect(() => {
+    console.log("hello -- this is getting the upload link");
+    console.log(resumeUploadLink);
     resume &&
       fetch("/s3Url")
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
-          handleUploadLink(data.url);
+          console.log("got the upload link");
+          setResumeUploadLink(data.url);
         });
   }, [resume]);
 
   // once there is a file and upload link, post the resume and set the download link
   useEffect(() => {
+    console.log("now putting the file into aws");
     async function fetchData() {
       resumeUploadLink &&
         resume &&
@@ -62,10 +71,15 @@ const ApplicationForm = ({ job, setJobInfo, jobInfo }) => {
           },
 
           body: resume,
-        }));
+        })
+          //   .then((res) => res.json())
+          .then((data) => {
+            console.log("put into s3!");
+            console.log(data);
+          }));
     }
-    async function handleData() {
-      await fetchData();
+    function handleData() {
+      fetchData();
       resumeUploadLink && handleGetUrl();
     }
 
@@ -97,7 +111,12 @@ const ApplicationForm = ({ job, setJobInfo, jobInfo }) => {
         </RowWrap>
         <RowWrap>
           <Label>Upload your resume: </Label>
-          <Input name="resume" type="file" onChange={handleResumeInput}></Input>
+          <Input
+            name="resume"
+            type="file"
+            id="resume"
+            onChange={handleResumeInput}
+          ></Input>
         </RowWrap>
       </Form>
     </Wrapper>
