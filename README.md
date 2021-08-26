@@ -25,6 +25,9 @@ Landing Page:
 <img width="1447" alt="Screenshot 2021-08-26 at 10 19 02 AM" src="https://user-images.githubusercontent.com/77980669/130981011-0aed1546-4776-4e13-ad2d-88f5d959362f.png">
 
 Landing Page -- rolling quotes:
+<img width="1235" alt="Screenshot 2021-08-26 at 10 19 09 AM" src="https://user-images.githubusercontent.com/77980669/130984842-80d0a193-6660-40e4-a25a-4cc9c4ba81ff.png">
+
+Home Page
 <img width="1469" alt="Screenshot 2021-08-26 at 10 19 26 AM" src="https://user-images.githubusercontent.com/77980669/130981067-a4506580-7656-456a-878a-78ebe5dcc33d.png">
 
 Open Job Listings: 
@@ -36,8 +39,8 @@ Example Job Listing (to third party):
 Application section:
 <img width="1160" alt="Screenshot 2021-08-26 at 10 19 52 AM" src="https://user-images.githubusercontent.com/77980669/130981232-0c7de173-c93f-49f1-90ae-f28d405ca8ec.png">
 
-Review applications/download CVs/Offer jobs & Interviews
-<img width="1466" alt="Screenshot 2021-08-26 at 10 20 23 AM" src="https://user-images.githubusercontent.com/77980669/130981302-42200861-dfe5-4987-8697-8268b59f5aec.png">
+Review applications/download CVs/Offer jobs & Interviews:
+![Screenshot 2021-08-26 at 10 20 23 AM](https://user-images.githubusercontent.com/77980669/130984822-5a66d847-82cb-4972-b0bb-da555e2bddff.png)
 
 EmailJS API Interview offer:
 
