@@ -42,14 +42,14 @@ Application section:
 Review applications/download CVs/Offer jobs & Interviews:
 ![Screenshot 2021-08-26 at 10 20 23 AM](https://user-images.githubusercontent.com/77980669/130984822-5a66d847-82cb-4972-b0bb-da555e2bddff.png)
 
-EmailJS API Interview offer:
-
+Manage people/export to csv:
 ![Screenshot 2021-08-26 at 10 24 24 AM](https://user-images.githubusercontent.com/77980669/130981511-668abf55-ebc4-40c6-a668-85d5cb3b08c0.png)
 
 HelloSign API Contract Offer Email:
 ![Screenshot 2021-08-26 at 10 21 21 AM](https://user-images.githubusercontent.com/77980669/130981401-724686ae-32d8-4cc1-899a-0a579f763c15.png)
 
-Manage people/export to csv:
+
+EmailJS API Interview offer:
 ![Screenshot 2021-08-26 at 10 20 50 AM](https://user-images.githubusercontent.com/77980669/130981468-a863fbb8-e252-4b1f-b2eb-fbc1b735deb8.png)
 
 ##### Known bugs and future implementation goals
